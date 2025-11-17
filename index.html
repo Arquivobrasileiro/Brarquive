@@ -4,147 +4,212 @@
 <meta charset="utf-8"/>
 <meta content="width=device-width,initial-scale=1" name="viewport"/>
 <title>Catálogo de Marcas Brasileiras</title>
+
 <style>
-/* === CSS LIMPO E CORRIGIDO ===
-  Removi os espaços problemáticos do início das linhas
-*/
 :root {
-  --card-height: 220px;
+  --card-height: 280px; /* Cartões um pouco mais altos */
+  --noise-opacity: 0.1;  /* Opacidade do "caos" (0.05 a 0.15 é bom) */
 }
+
+/* 1. ESTILO GERAL (FUNDO PRETO, FONTE MINIMALISTA) */
 body {
-  font-family: Arial, sans-serif;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
   margin: 0;
-  background: #f4f4f6;
-  color: #111;
+  background: #000; /* Fundo preto, como pedido */
+  color: #e0e0e0; /* Branco suave para ser "agradável" */
 }
 
+/* 2. HEADER E BUSCA (BEM VISÍVEL) */
 header {
-  background: #0f1113;
+  background: #000;
   color: #fff;
-  padding: 1.25rem;
+  padding: 2rem 1rem; /* Mais espaçamento */
   text-align: center;
+  border-bottom: 1px solid #222; /* Linha sutil de degradação */
 }
-header p { opacity: 0.9; margin: .25rem 0 0; }
-
-.busca { margin-top: .9rem; }
-.busca input{
-  padding: .5rem .75rem;
-  width: 86%;
-  max-width: 420px;
-  border: none;
-  border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.12) inset;
+header h1 {
+  margin: 0 0 0.5rem 0;
+  font-size: 2rem;
+  letter-spacing: 1px;
+}
+header p { 
+  opacity: 0.7; 
+  margin: .25rem 0 0; 
+  font-size: 1rem;
 }
 
-/* === CSS ADICIONADO PARA OS FILTROS === */
+.busca { 
+  margin-top: 1.5rem; 
+}
+.busca input {
+  /* "Bem visível" */
+  padding: 1rem;
+  width: 90%;
+  max-width: 600px;
+  border: 1px solid #444;
+  border-radius: 0; /* Bordas retas, mais brutalista */
+  background: #111;
+  color: #fff;
+  font-size: 1.1rem;
+  transition: border-color .3s, background-color .3s;
+}
+.busca input:focus {
+  outline: none;
+  border-color: #fff;
+  background: #000;
+}
+
+/* 3. FILTROS DE CATEGORIA (ESTILO ESCURO) */
 .filtros {
-  margin-top: 1.25rem;
+  margin-top: 1.5rem;
   display: flex;
   flex-wrap: wrap;
-  gap: .5rem;
+  gap: .6rem;
   justify-content: center;
 }
 .btn-filtro {
-  padding: .5rem .9rem;
-  border: 1px solid rgba(255,255,255,0.2);
-  background: rgba(255,255,255,0.08);
-  color: #fff;
-  border-radius: 8px;
+  padding: .6rem 1rem;
+  border: 1px solid #333;
+  background: #0c0c0c;
+  color: #aaa;
+  border-radius: 0;
   cursor: pointer;
   font-size: .9rem;
   font-weight: 600;
-  transition: background .2s, border-color .2s;
+  transition: all .2s;
 }
 .btn-filtro:hover {
-  background: rgba(255,255,255,0.15);
+  background: #1a1a1a;
+  color: #fff;
+  border-color: #444;
 }
 .btn-filtro.ativo {
   background: #fff;
-  color: #0f1113;
+  color: #000;
   border-color: #fff;
 }
-/* ======================================= */
 
+/* 4. O CATÁLOGO E OS CARDS DAS MARCAS */
 .catalogo {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-  gap: 1rem;
-  padding: 1rem;
-  max-width: 1200px;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); /* Um pouco maior */
+  gap: 1.5rem; /* Mais espaçamento */
+  padding: 1.5rem;
+  max-width: 1400px;
   margin: 0 auto 3rem;
 }
 
 .marca {
-  border-radius: 12px;
+  border-radius: 0; /* Bordas retas */
   overflow: hidden;
   position: relative;
   min-height: var(--card-height);
   display: flex;
-  align-items: end;
-  background-color: #ddd; /* fallback */
+  align-items: flex-end; /* Alinha info na base */
+  background-color: #111;
   background-size: cover;
   background-position: center;
-  transition: transform .32s cubic-bezier(.2,.9,.3,1), box-shadow .32s;
-  box-shadow: 0 4px 12px rgba(16,24,40,0.06);
-}
-.marca:hover{
-  transform: translateY(-6px) scale(1.02);
-  box-shadow: 0 18px 40px rgba(16,24,40,0.16);
+  border: 1px solid #222; /* Borda "degradada" sutil */
+  
+  /* Efeito de degradação: sem cor e escuro por padrão */
+  filter: grayscale(90%) brightness(0.8);
+  transition: transform .4s, filter .4s;
 }
 
-.marca::after{
+/* Ao passar o mouse, a "vida" volta ao card */
+.marca:hover {
+  transform: scale(1.03);
+  filter: grayscale(0%) brightness(1);
+  border-color: #444;
+  z-index: 10;
+}
+
+/* 5. EFEITO DE "CAOS" E "DEGRADAÇÃO" (A MÁGICA) */
+/* Este ::after cria a animação de ruído por cima de tudo */
+.marca::after {
   content: "";
   position: absolute;
   inset: 0;
-  background: linear-gradient(180deg, rgba(0,0,0,0.05) 0%, rgba(0,0,0,0.45) 100%);
   pointer-events: none;
-  transition: background .3s;
+  
+  /* Imagem de ruído (noise) animada */
+  background-image: url('https://i.stack.imgur.com/2K13s.png');
+  background-size: 100px 100px; /* Tamanho do "grão" */
+  opacity: var(--noise-opacity);
+  animation: noise 0.5s steps(3) infinite;
 }
 
-.marca-info{
+/* Animação que mexe a imagem de ruído, criando o "caos" */
+@keyframes noise {
+  0% { background-position: 0 0; }
+  10% { background-position: -10px -15px; }
+  20% { background-position: 10px 5px; }
+  30% { background-position: -25px 20px; }
+  40% { background-position: 15px -10px; }
+  50% { background-position: -10px 15px; }
+  60% { background-position: 20px -20px; }
+  70% { background-position: -5px 10px; }
+  80% { background-position: 10px 5px; }
+  90% { background-position: -15px -10px; }
+  100% { background-position: 0 0; }
+}
+
+
+/* 6. INFORMAÇÕES DO CARD (NOME E BOTÃO) */
+.marca-info {
   position: relative;
   z-index: 2;
   width: 100%;
-  background: rgba(0,0,0,0.45);
-  padding: 1.25rem;
-  text-align: center;
-  color: #fff;
-  transition: background .28s;
-  backdrop-filter: blur(2px);
+  /* Gradiente escuro para garantir leitura, mais sutil */
+  background: linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(0,0,0,0.85) 100%);
+  padding: 1.5rem 1rem 1rem; /* Mais padding */
+  text-align: left; /* Minimalista */
+  backdrop-filter: blur(1px); /* Leve "desfoque" */
 }
-.marca:hover .marca-info{ background: rgba(0,0,0,0.6); }
 
-.marca-info h2{
-  margin: 0;
-  font-size: 1.05rem;
-  letter-spacing: .2px;
-  text-shadow: 0 6px 18px rgba(0,0,0,0.55);
+.marca-info h2 {
+  margin: 0 0 0.8rem 0;
+  font-size: 1.25rem;
+  letter-spacing: .5px;
+  text-shadow: 0 2px 10px rgba(0,0,0,0.8);
 }
-.marca-info .btn-insta{
+/* Link do nome da marca */
+.marca-info h2 a {
+  color: inherit;
+  text-decoration: none;
+  transition: color .2s;
+}
+.marca:hover .marca-info h2 a {
+  color: #fff;
+}
+
+/* Botão do Instagram (novo estilo) */
+.marca-info .btn-insta {
   display: inline-block;
-  margin-top: .7rem;
-  padding: .4rem .7rem;
-  background: linear-gradient(180deg,#e84880,#c8255a);
+  margin-top: 0;
+  padding: .5rem .8rem;
+  background: rgba(255, 255, 255, 0.1); /* Fundo sutil */
+  border: 1px solid rgba(255, 255, 255, 0.3);
   color: #fff;
   text-decoration: none;
-  border-radius: 8px;
+  border-radius: 0;
   font-weight: 700;
-  font-size: .9rem;
-  box-shadow: 0 6px 18px rgba(232,72,128,0.12);
+  font-size: .8rem;
+  text-transform: uppercase; /* Mais "brutalista" */
+  backdrop-filter: blur(5px);
+  transition: all .2s;
 }
-.marca-info .btn-insta:focus { outline: 2px solid rgba(255,255,255,0.12); }
-
-/* entrance */
-@keyframes fadeInUp {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
+.marca-info .btn-insta:hover {
+  background: #fff;
+  color: #000;
 }
-.marca { animation: fadeInUp .5s ease both; }
 
-/* ==== BACKGROUNDS DE CADA MARCA ==== */
+
+/* 7. FUNDOS DAS MARCAS (Sem mudança) */
 .marca._1of1 { background-image: url("1of1.jpg"); }
 .marca.above-average { background-image: url("above-average.jpg"); }
 .marca.aevus { background-image: url("aevus.jpg"); }
+/* ... (todo o resto das suas imagens de fundo) ... */
 .marca.agui { background-image: url("agui.jpg"); }
 .marca.amenbreak { background-image: url("amenbreak.jpg"); }
 .marca.amni { background-image: url("amni.jpg"); }
@@ -213,99 +278,106 @@ header p { opacity: 0.9; margin: .25rem 0 0; }
 .marca.working-title { background-image: url("working-title.jpg"); }
 .marca.yatsa { background-image: url("yatsa.jpg"); }
 
-/* small screens tweak */
+/* 8. AJUSTE PARA TELAS PEQUENAS (Responsivo) */
 @media (max-width:480px){
-  .marca-info{ padding: 1rem; }
-  :root{ --card-height: 180px; }
+  :root{ --card-height: 240px; }
+  .catalogo {
+    grid-template-columns: 1fr; /* Uma coluna só no celular */
+    padding: 1rem;
+    gap: 1rem;
+  }
+  header { padding: 1.5rem 1rem; }
+  .busca input { padding: 0.9rem; font-size: 1rem; }
 }
 </style>
 </head>
 <body>
 <header>
-<h1>Catálogo de Marcas Brasileiras</h1>
-<p>Descubra marcas nacionais e suas peças de destaque</p>
-<div class="busca">
-<input aria-label="Buscar por marca ou peça" id="campoBusca" placeholder="Buscar por marca ou peça..." type="text"/>
-</div>
+  <h1>Catálogo de Marcas Brasileiras</h1>
+  <p>Descubra marcas nacionais e suas peças de destaque</p>
+  <div class="busca">
+    <input aria-label="Buscar por marca ou peça" id="campoBusca" placeholder="Buscar por marca ou peça..." type="text"/>
+  </div>
 
-<div class="filtros" id="filtrosCategoria">
-    <button class="btn-filtro ativo" data-categoria="todas">Todas</button>
-    <button class="btn-filtro" data-categoria="roupas">Roupas</button>
-    <button class="btn-filtro" data-categoria="calcados">Calçados</button>
-    <button class="btn-filtro" data-categoria="acessorios">Acessórios</button>
-    </div>
+  <div class="filtros" id="filtrosCategoria">
+      <button class="btn-filtro ativo" data-categoria="todas">Todas</button>
+      <button class="btn-filtro" data-categoria="roupas">Roupas</button>
+      <button class="btn-filtro" data-categoria="calcados">Calçados</button>
+      <button class="btn-filtro" data-categoria="acessorios">Acessórios</button>
+  </div>
 </header>
+
 <section class="catalogo" id="catalogo">
-<div class="marca _1of1" data-nome="1of1" data-categorias="roupas"><div class="marca-info"><h2><a href="1of1.html" style="color:inherit; text-decoration:none;">1of1</a></h2></div></div>
-<div class="marca above-average" data-nome="Above average" data-categorias="roupas"><div class="marca-info"><h2><a href="above-average.html" style="color:inherit; text-decoration:none;">Above average</a></h2></div></div>
-<div class="marca aevus" data-nome="Aevus" data-categorias="roupas"><div class="marca-info"><h2><a href="aevus.html" style="color:inherit; text-decoration:none;">Aevus</a></h2></div></div>
-<div class="marca agui" data-nome="Agui" data-categorias="roupas acessorios"><div class="marca-info"><h2><a href="agui.html" style="color:inherit; text-decoration:none;">Agui</a></h2></div></div>
-<div class="marca amenbreak" data-nome="Amenbreak" data-categorias="roupas"><div class="marca-info"><h2><a href="amenbreak.html" style="color:inherit; text-decoration:none;">Amenbreak</a></h2></div></div>
-<div class="marca amni" data-nome="Amni" data-categorias="roupas"><div class="marca-info"><h2><a href="amni.html" style="color:inherit; text-decoration:none;">Amni</a></h2></div></div>
-<div class="marca antifashion" data-nome="Antifashion" data-categorias="roupas"><div class="marca-info"><h2><a href="antifashion.html" style="color:inherit; text-decoration:none;">Antifashion</a></h2></div></div>
-<div class="marca apill" data-nome="Apill" data-categorias="roupas"><div class="marca-info"><h2><a href="apill.html" style="color:inherit; text-decoration:none;">Apill</a></h2></div></div>
-<div class="marca arch-studio" data-nome="Arch studio" data-categorias="roupas"><div class="marca-info"><h2><a href="arch-studio.html" style="color:inherit; text-decoration:none;">Arch studio</a></h2></div></div>
-<div class="marca ash3s" data-nome="Ash3s" data-categorias="roupas"><div class="marca-info"><h2><a href="ash3s.html" style="color:inherit; text-decoration:none;">Ash3s</a></h2></div></div>
-<div class="marca borra" data-nome="Borra" data-categorias="roupas"><div class="marca-info"><h2><a href="borra.html" style="color:inherit; text-decoration:none;">Borra</a></h2></div></div>
-<div class="marca carnan" data-nome="Carnan" data-categorias="roupas acessorios"><div class="marca-info"><h2><a href="carnan.html" style="color:inherit; text-decoration:none;">Carnan</a></h2></div></div>
-<div class="marca cie" data-nome="Cie" data-categorias="roupas"><div class="marca-info"><h2><a href="cie.html" style="color:inherit; text-decoration:none;">Cie</a></h2></div></div>
-<div class="marca ciena" data-nome="Ciena" data-categorias="roupas"><div class="marca-info"><h2><a href="ciena.html" style="color:inherit; text-decoration:none;">Ciena</a></h2></div></div>
-<div class="marca clemente-studio" data-nome="Clemente studio" data-categorias="roupas"><div class="marca-info"><h2><a href="clemente-studio.html" style="color:inherit; text-decoration:none;">Clemente studio</a></h2></div></div>
-<div class="marca cruelty" data-nome="Cruelty" data-categorias="roupas"><div class="marca-info"><h2><a href="cruelty.html" style="color:inherit; text-decoration:none;">Cruelty</a></h2></div></div>
-<div class="marca cypriano" data-nome="Cypriano" data-categorias="roupas"><div class="marca-info"><h2><a href="cypriano.html" style="color:inherit; text-decoration:none;">Cypriano</a></h2></div></div>
-<div class="marca desgosto" data-nome="Desgosto" data-categorias="roupas"><div class="marca-info"><h2><a href="desgosto.html" style="color:inherit; text-decoration:none;">Desgosto</a></h2></div></div>
-<div class="marca desprezo" data-nome="Desprezo" data-categorias="roupas"><div class="marca-info"><h2><a href="desprezo.html" style="color:inherit; text-decoration:none;">Desprezo</a></h2></div></div>
-<div class="marca dust" data-nome="Dust" data-categorias="acessorios"><div class="marca-info"><h2><a href="dust.html" style="color:inherit; text-decoration:none;">Dust</a></h2></div></div>
-<div class="marca dismorfia" data-nome="Dismorfia" data-categorias="roupas"><div class="marca-info"><h2><a href="dismorfia.html" style="color:inherit; text-decoration:none;">Dismorfia</a></h2></div></div>
-<div class="marca dod-alfaiataria" data-nome="Dod Alfaiataria" data-categorias="roupas"><div class="marca-info"><h2><a href="dod-alfaiataria.html" style="color:inherit; text-decoration:none;">Dod Alfaiataria</a></h2></div></div>
-<div class="marca dope-studios" data-nome="Dope studios" data-categorias="roupas"><div class="marca-info"><h2><a href="dope-studios.html" style="color:inherit; text-decoration:none;">Dope studios</a></h2></div></div>
-<div class="marca each" data-nome="Each" data-categorias="roupas"><div class="marca-info"><h2><a href="each.html" style="color:inherit; text-decoration:none;">Each</a></h2></div></div>
-<div class="marca eclat" data-nome="Eclat" data-categorias="roupas"><div class="marca-info"><h2><a href="eclat.html" style="color:inherit; text-decoration:none;">Eclat</a></h2></div></div>
-<div class="marca egho-studios" data-nome="Egho Studios" data-categorias="roupas"><div class="marca-info"><h2><a href="egho-studios.html" style="color:inherit; text-decoration:none;">Egho Studios</a></h2></div></div>
-<div class="marca eloemcomum" data-nome="Eloemcomum" data-categorias="roupas"><div class="marca-info"><h2><a href="eloemcomum.html" style="color:inherit; text-decoration:none;">Eloemcomum</a></h2></div></div>
-<div class="marca estante-project" data-nome="Estante project" data-categorias="roupas"><div class="marca-info"><h2><a href="estante-project.html" style="color:inherit; text-decoration:none;">Estante project</a></h2></div></div>
-<div class="marca estudio-teia" data-nome="Estudio Teia" data-categorias="roupas"><div class="marca-info"><h2><a href="estudio-teia.html" style="color:inherit; text-decoration:none;">Estudio Teia</a></h2></div></div>
-<div class="marca etogallery" data-nome="Etogallery" data-categorias="roupas"><div class="marca-info"><h2><a href="etogallery.html" style="color:inherit; text-decoration:none;">Etogallery</a></h2></div></div>
-<div class="marca evo-studios" data-nome="Evo studios" data-categorias="roupas"><div class="marca-info"><h2><a href="evo-studios.html" style="color:inherit; text-decoration:none;">Evo studios</a></h2></div></div>
-<div class="marca hard-jeans-santo" data-nome="Hard jeans santo" data-categorias="roupas"><div class="marca-info"><h2><a href="hard-jeans-santo.html" style="color:inherit; text-decoration:none;">Hard jeans santo</a></h2></div></div>
-<div class="marca hatelegit" data-nome="Hatelegit" data-categorias="roupas"><div class="marca-info"><h2><a href="hatelegit.html" style="color:inherit; text-decoration:none;">Hatelegit</a></h2></div></div>
-<div class="marca heiko" data-nome="Heiko" data-categorias="roupas"><div class="marca-info"><h2><a href="heiko.html" style="color:inherit; text-decoration:none;">Heiko</a></h2></div></div>
-<div class="marca humanite" data-nome="Humanite" data-categorias="roupas"><div class="marca-info"><h2><a href="humanite.html" style="color:inherit; text-decoration:none;">Humanite</a></h2></div></div>
-<div class="marca izanagi-store" data-nome="Izanagi Store" data-categorias="roupas"><div class="marca-info"><h2><a href="izanagi-store.html" style="color:inherit; text-decoration:none;">Izanagi Store</a></h2></div></div>
-<div class="marca kaeda" data-nome="Kaeda" data-categorias="roupas"><div class="marca-info"><h2><a href="kaeda.html" style="color:inherit; text-decoration:none;">Kaeda</a></h2></div></div>
-<div class="marca kapitol-kulture" data-nome="Kapitol kulture" data-categorias="roupas"><div class="marca-info"><h2><a href="kapitol-kulture.html" style="color:inherit; text-decoration:none;">Kapitol kulture</a></h2></div></div>
-<div class="marca kardigan" data-nome="Kardigan" data-categorias="roupas"><div class="marca-info"><h2><a href="kardigan.html" style="color:inherit; text-decoration:none;">Kardigan</a></h2></div></div>
-<div class="marca kg-studios" data-nome="Kg studios" data-categorias="roupas"><div class="marca-info"><h2><a href="kg-studios.html" style="color:inherit; text-decoration:none;">Kg studios</a></h2></div></div>
-<div class="marca kleos" data-nome="Kleos" data-categorias="roupas"><div class="marca-info"><h2><a href="kleos.html" style="color:inherit; text-decoration:none;">Kleos</a></h2></div></div>
-<div class="marca l-ordre" data-nome="L'ordre" data-categorias="roupas"><div class="marca-info"><h2><a href="l'ordre.html" style="color:inherit; text-decoration:none;">L'ordre</a></h2></div></div>
-<div class="marca mad-enlatados" data-nome="Mad_enlatados" data-categorias="roupas"><div class="marca-info"><h2><a href="mad-enlatados.html" style="color:inherit; text-decoration:none;">Mad_enlatados</a></h2></div></div>
-<div class="marca melania" data-nome="Melania" data-categorias="roupas"><div class="marca-info"><h2><a href="melania.html" style="color:inherit; text-decoration:none;">Melania</a></h2></div></div>
-<div class="marca morte-visual" data-nome="Morte visual" data-categorias="roupas"><div class="marca-info"><h2><a href="morte-visual.html" style="color:inherit; text-decoration:none;">Morte visual</a></h2></div></div>
-<div class="marca noir-division" data-nome="Noir Division" data-categorias="roupas"><div class="marca-info"><h2><a href="noir-division.html" style="color:inherit; text-decoration:none;">Noir Division</a></h2></div></div>
-<div class="marca northstar" data-nome="Northstar" data-categorias="roupas"><div class="marca-info"><h2><a href="northstar.html" style="color:inherit; text-decoration:none;">Northstar</a></h2></div></div>
-<div class="marca oblivio-studios" data-nome="Oblivio.studios" data-categorias="roupas"><div class="marca-info"><h2><a href="obliviostudios.html" style="color:inherit; text-decoration:none;">Oblivio.studios</a></h2></div></div>
-<div class="marca onyx" data-nome="Onyx Five" data-categorias="roupas"><div class="marca-info"><h2><a href="onyx-five.html" style="color:inherit; text-decoration:none;">Onyx Five</a></h2></div></div>
-<div class="marca pace" data-nome="Pace" data-categorias="roupas calcados acessorios"><div class="marca-info"><h2><a href="pace.html" style="color:inherit; text-decoration:none;">Pace</a></h2></div></div>
-<div class="marca palla-world" data-nome="Palla world" data-categorias="roupas"><div class="marca-info"><h2><a href="palla-world.html" style="color:inherit; text-decoration:none;">Palla world</a></h2></div></div>
-<div class="marca pelestie" data-nome="Pelestie" data-categorias="roupas"><div class="marca-info"><h2><a href="pelestie.html" style="color:inherit; text-decoration:none;">Pelestie</a></h2></div></div>
-<div class="marca perschange" data-nome="Perschange" data-categorias="roupas"><div class="marca-info"><h2><a href="perschange.html" style="color:inherit; text-decoration:none;">Perschange</a></h2></div></div>
-<div class="marca piet" data-nome="Piet" data-categorias="roupas calcados acessorios"><div class="marca-info"><h2><a href="piet.html" style="color:inherit; text-decoration:none;">Piet</a></h2></div></div>
-<div class="marca preux" data-nome="Preux" data-categorias="roupas"><div class="marca-info"><h2><a href="preux.html" style="color:inherit; text-decoration:none;">Preux</a></h2></div></div>
-<div class="marca resurge-studios" data-nome="Resurge Studios" data-categorias="roupas"><div class="marca-info"><h2><a href="resurge-studios.html" style="color:inherit; text-decoration:none;">Resurge Studios</a></h2></div></div>
-<div class="marca rhytmo" data-nome="Rhytmo" data-categorias="roupas"><div class="marca-info"><h2><a href="rhytmo.html" style="color:inherit; text-decoration:none;">Rhytmo</a></h2></div></div>
-<div class="marca saintephemere" data-nome="Saintephemere" data-categorias="roupas"><div class="marca-info"><h2><a href="saintephemere.html" style="color:inherit; text-decoration:none;">Saintephemere</a></h2></div></div>
-<div class="marca sczo-6" data-nome="Sczo-6" data-categorias="roupas"><div class="marca-info"><h2><a href="sczo-6.html" style="color:inherit; text-decoration:none;">Sczo-6</a></h2></div></div>
-<div class="marca secta" data-nome="Secta" data-categorias="roupas"><div class="marca-info"><h2><a href="secta.html" style="color:inherit; text-decoration:none;">Secta</a></h2></div></div>
-<div class="marca skopos" data-nome="Skopos" data-categorias="roupas"><div class="marca-info"><h2><a href="skopos.html" style="color:inherit; text-decoration:none;">Skopos</a></h2></div></div>
-<div class="marca state-of-wonder" data-nome="State of wonder" data-categorias="roupas"><div class="marca-info"><h2><a href="state-of-wonder.html" style="color:inherit; text-decoration:none;">State of wonder</a></h2></div></div>
-<div class="marca ukio" data-nome="Ukio" data-categorias="roupas"><div class="marca-info"><h2><a href="ukio.html" style="color:inherit; text-decoration:none;">Ukio</a></h2></div></div>
-<div class="marca ung" data-nome="Ung" data-categorias="roupas"><div class="marca-info"><h2><a href="ung.html" style="color:inherit; text-decoration:none;">Ung</a></h2></div></div>
-<div class="marca viga" data-nome="Viga" data-categorias="calcados"><div class="marca-info"><h2><a href="viga.html" style="color:inherit; text-decoration:none;">Viga</a></h2></div></div>
-<div class="marca vilela-boots" data-nome="Vilela boots" data-categorias="calcados"><div class="marca-info"><h2><a href="vilela-boots.html" style="color:inherit; text-decoration:none;">Vilela boots</a></h2></div></div>
-<div class="marca vinegar" data-nome="Vinegar" data-categorias="roupas"><div class="marca-info"><h2><a href="vinegar.html" style="color:inherit; text-decoration:none;">Vinegar</a></h2></div></div>
-<div class="marca vista" data-nome="Vista" data-categorias="roupas"><div class="marca-info"><h2><a href="vista.html" style="color:inherit; text-decoration:none;">Vista</a></h2></div></div>
-<div class="marca working-title" data-nome="Working title" data-categorias="roupas"><div class="marca-info"><h2><a href="working-title.html" style="color:inherit; text-decoration:none;">Working title</a></h2></div></div>
-<div class="marca yatsa" data-nome="Yatsa" data-categorias="roupas"><div class="marca-info"><h2><a href="yatsa.html" style="color:inherit; text-decoration:none;">Yatsa</a></h2></div></div>
+  <div class="marca _1of1" data-nome="1of1" data-categorias="roupas"><div class="marca-info"><h2><a href="1of1.html" style="color:inherit; text-decoration:none;">1of1</a></h2></div></div>
+  <div class="marca above-average" data-nome="Above average" data-categorias="roupas"><div class="marca-info"><h2><a href="above-average.html" style="color:inherit; text-decoration:none;">Above average</a></h2></div></div>
+  <div class="marca aevus" data-nome="Aevus" data-categorias="roupas"><div class="marca-info"><h2><a href="aevus.html" style="color:inherit; text-decoration:none;">Aevus</a></h2></div></div>
+  <div class="marca agui" data-nome="Agui" data-categorias="roupas acessorios"><div class="marca-info"><h2><a href="agui.html" style="color:inherit; text-decoration:none;">Agui</a></h2></div></div>
+  <div class="marca amenbreak" data-nome="Amenbreak" data-categorias="roupas"><div class="marca-info"><h2><a href="amenbreak.html" style="color:inherit; text-decoration:none;">Amenbreak</a></h2></div></div>
+  <div class="marca amni" data-nome="Amni" data-categorias="roupas"><div class="marca-info"><h2><a href="amni.html" style="color:inherit; text-decoration:none;">Amni</a></h2></div></div>
+  <div class="marca antifashion" data-nome="Antifashion" data-categorias="roupas"><div class="marca-info"><h2><a href="antifashion.html" style="color:inherit; text-decoration:none;">Antifashion</a></h2></div></div>
+  <div class="marca apill" data-nome="Apill" data-categorias="roupas"><div class="marca-info"><h2><a href="apill.html" style="color:inherit; text-decoration:none;">Apill</a></h2></div></div>
+  <div class="marca arch-studio" data-nome="Arch studio" data-categorias="roupas"><div class="marca-info"><h2><a href="arch-studio.html" style="color:inherit; text-decoration:none;">Arch studio</a></h2></div></div>
+  <div class="marca ash3s" data-nome="Ash3s" data-categorias="roupas"><div class="marca-info"><h2><a href="ash3s.html" style="color:inherit; text-decoration:none;">Ash3s</a></h2></div></div>
+  <div class="marca borra" data-nome="Borra" data-categorias="roupas"><div class="marca-info"><h2><a href="borra.html" style="color:inherit; text-decoration:none;">Borra</a></h2></div></div>
+  <div class="marca carnan" data-nome="Carnan" data-categorias="roupas acessorios"><div class="marca-info"><h2><a href="carnan.html" style="color:inherit; text-decoration:none;">Carnan</a></h2></div></div>
+  <div class="marca cie" data-nome="Cie" data-categorias="roupas"><div class="marca-info"><h2><a href="cie.html" style="color:inherit; text-decoration:none;">Cie</a></h2></div></div>
+  <div class="marca ciena" data-nome="Ciena" data-categorias="roupas"><div class="marca-info"><h2><a href="ciena.html" style="color:inherit; text-decoration:none;">Ciena</a></h2></div></div>
+  <div class="marca clemente-studio" data-nome="Clemente studio" data-categorias="roupas"><div class="marca-info"><h2><a href="clemente-studio.html" style="color:inherit; text-decoration:none;">Clemente studio</a></h2></div></div>
+  <div class="marca cruelty" data-nome="Cruelty" data-categorias="roupas"><div class="marca-info"><h2><a href="cruelty.html" style="color:inherit; text-decoration:none;">Cruelty</a></h2></div></div>
+  <div class="marca cypriano" data-nome="Cypriano" data-categorias="roupas"><div class="marca-info"><h2><a href="cypriano.html" style="color:inherit; text-decoration:none;">Cypriano</a></h2></div></div>
+  <div class="marca desgosto" data-nome="Desgosto" data-categorias="roupas"><div class="marca-info"><h2><a href="desgosto.html" style="color:inherit; text-decoration:none;">Desgosto</a></h2></div></div>
+  <div class="marca desprezo" data-nome="Desprezo" data-categorias="roupas"><div class="marca-info"><h2><a href="desprezo.html" style="color:inherit; text-decoration:none;">Desprezo</a></h2></div></div>
+  <div class="marca dust" data-nome="Dust" data-categorias="acessorios"><div class="marca-info"><h2><a href="dust.html" style="color:inherit; text-decoration:none;">Dust</a></h2></div></div>
+  <div class="marca dismorfia" data-nome="Dismorfia" data-categorias="roupas"><div class="marca-info"><h2><a href="dismorfia.html" style="color:inherit; text-decoration:none;">Dismorfia</a></h2></div></div>
+  <div class="marca dod-alfaiataria" data-nome="Dod Alfaiataria" data-categorias="roupas"><div class="marca-info"><h2><a href="dod-alfaiataria.html" style="color:inherit; text-decoration:none;">Dod Alfaiataria</a></h2></div></div>
+  <div class="marca dope-studios" data-nome="Dope studios" data-categorias="roupas"><div class="marca-info"><h2><a href="dope-studios.html" style="color:inherit; text-decoration:none;">Dope studios</a></h2></div></div>
+  <div class="marca each" data-nome="Each" data-categorias="roupas"><div class="marca-info"><h2><a href="each.html" style="color:inherit; text-decoration:none;">Each</a></h2></div></div>
+  <div class="marca eclat" data-nome="Eclat" data-categorias="roupas"><div class="marca-info"><h2><a href="eclat.html" style="color:inherit; text-decoration:none;">Eclat</a></h2></div></div>
+  <div class="marca egho-studios" data-nome="Egho Studios" data-categorias="roupas"><div class="marca-info"><h2><a href="egho-studios.html" style="color:inherit; text-decoration:none;">Egho Studios</a></h2></div></div>
+  <div class="marca eloemcomum" data-nome="Eloemcomum" data-categorias="roupas"><div class="marca-info"><h2><a href="eloemcomum.html" style="color:inherit; text-decoration:none;">Eloemcomum</a></h2></div></div>
+  <div class="marca estante-project" data-nome="Estante project" data-categorias="roupas"><div class="marca-info"><h2><a href="estante-project.html" style="color:inherit; text-decoration:none;">Estante project</a></h2></div></div>
+  <div class="marca estudio-teia" data-nome="Estudio Teia" data-categorias="roupas"><div class="marca-info"><h2><a href="estudio-teia.html" style="color:inherit; text-decoration:none;">Estudio Teia</a></h2></div></div>
+  <div class="marca etogallery" data-nome="Etogallery" data-categorias="roupas"><div class="marca-info"><h2><a href="etogallery.html" style="color:inherit; text-decoration:none;">Etogallery</a></h2></div></div>
+  <div class="marca evo-studios" data-nome="Evo studios" data-categorias="roupas"><div class="marca-info"><h2><a href="evo-studios.html" style="color:inherit; text-decoration:none;">Evo studios</a></h2></div></div>
+  <div class="marca hard-jeans-santo" data-nome="Hard jeans santo" data-categorias="roupas"><div class="marca-info"><h2><a href="hard-jeans-santo.html" style="color:inherit; text-decoration:none;">Hard jeans santo</a></h2></div></div>
+  <div class="marca hatelegit" data-nome="Hatelegit" data-categorias="roupas"><div class="marca-info"><h2><a href="hatelegit.html" style="color:inherit; text-decoration:none;">Hatelegit</a></h2></div></div>
+  <div class="marca heiko" data-nome="Heiko" data-categorias="roupas"><div class="marca-info"><h2><a href="heiko.html" style="color:inherit; text-decoration:none;">Heiko</a></h2></div></div>
+  <div class="marca humanite" data-nome="Humanite" data-categorias="roupas"><div class="marca-info"><h2><a href="humanite.html" style="color:inherit; text-decoration:none;">Humanite</a></h2></div></div>
+  <div class="marca izanagi-store" data-nome="Izanagi Store" data-categorias="roupas"><div class="marca-info"><h2><a href="izanagi-store.html" style="color:inherit; text-decoration:none;">Izanagi Store</a></h2></div></div>
+  <div class="marca kaeda" data-nome="Kaeda" data-categorias="roupas"><div class="marca-info"><h2><a href="kaeda.html" style="color:inherit; text-decoration:none;">Kaeda</a></h2></div></div>
+  <div class="marca kapitol-kulture" data-nome="Kapitol kulture" data-categorias="roupas"><div class="marca-info"><h2><a href="kapitol-kulture.html" style="color:inherit; text-decoration:none;">Kapitol kulture</a></h2></div></div>
+  <div class="marca kardigan" data-nome="Kardigan" data-categorias="roupas"><div class="marca-info"><h2><a href="kardigan.html" style="color:inherit; text-decoration:none;">Kardigan</a></h2></div></div>
+  <div class="marca kg-studios" data-nome="Kg studios" data-categorias="roupas"><div class="marca-info"><h2><a href="kg-studios.html" style="color:inherit; text-decoration:none;">Kg studios</a></h2></div></div>
+  <div class="marca kleos" data-nome="Kleos" data-categorias="roupas"><div class="marca-info"><h2><a href="kleos.html" style="color:inherit; text-decoration:none;">Kleos</a></h2></div></div>
+  <div class="marca l-ordre" data-nome="L'ordre" data-categorias="roupas"><div class="marca-info"><h2><a href="l'ordre.html" style="color:inherit; text-decoration:none;">L'ordre</a></h2></div></div>
+  <div class="marca mad-enlatados" data-nome="Mad_enlatados" data-categorias="roupas"><div class="marca-info"><h2><a href="mad-enlatados.html" style="color:inherit; text-decoration:none;">Mad_enlatados</a></h2></div></div>
+  <div class="marca melania" data-nome="Melania" data-categorias="roupas"><div class="marca-info"><h2><a href="melania.html" style="color:inherit; text-decoration:none;">Melania</a></h2></div></div>
+  <div class="marca morte-visual" data-nome="Morte visual" data-categorias="roupas"><div class="marca-info"><h2><a href="morte-visual.html" style="color:inherit; text-decoration:none;">Morte visual</a></h2></div></div>
+  <div class="marca noir-division" data-nome="Noir Division" data-categorias="roupas"><div class="marca-info"><h2><a href="noir-division.html" style="color:inherit; text-decoration:none;">Noir Division</a></h2></div></div>
+  <div class="marca northstar" data-nome="Northstar" data-categorias="roupas"><div class="marca-info"><h2><a href="northstar.html" style="color:inherit; text-decoration:none;">Northstar</a></h2></div></div>
+  <div class="marca oblivio-studios" data-nome="Oblivio.studios" data-categorias="roupas"><div class="marca-info"><h2><a href="obliviostudios.html" style="color:inherit; text-decoration:none;">Oblivio.studios</a></h2></div></div>
+  <div class="marca onyx" data-nome="Onyx Five" data-categorias="roupas"><div class="marca-info"><h2><a href="onyx-five.html" style="color:inherit; text-decoration:none;">Onyx Five</a></h2></div></div>
+  <div class="marca pace" data-nome="Pace" data-categorias="roupas calcados acessorios"><div class="marca-info"><h2><a href="pace.html" style="color:inherit; text-decoration:none;">Pace</a></h2></div></div>
+  <div class="marca palla-world" data-nome="Palla world" data-categorias="roupas"><div class="marca-info"><h2><a href="palla-world.html" style="color:inherit; text-decoration:none;">Palla world</a></h2></div></div>
+  <div class="marca pelestie" data-nome="Pelestie" data-categorias="roupas"><div class="marca-info"><h2><a href="pelestie.html" style="color:inherit; text-decoration:none;">Pelestie</a></h2></div></div>
+  <div class="marca perschange" data-nome="Perschange" data-categorias="roupas"><div class="marca-info"><h2><a href="perschange.html" style="color:inherit; text-decoration:none;">Perschange</a></h2></div></div>
+  <div class="marca piet" data-nome="Piet" data-categorias="roupas calcados acessorios"><div class="marca-info"><h2><a href="piet.html" style="color:inherit; text-decoration:none;">Piet</a></h2></div></div>
+  <div class="marca preux" data-nome="Preux" data-categorias="roupas"><div class="marca-info"><h2><a href="preux.html" style="color:inherit; text-decoration:none;">Preux</a></h2></div></div>
+  <div class="marca resurge-studios" data-nome="Resurge Studios" data-categorias="roupas"><div class="marca-info"><h2><a href="resurge-studios.html" style="color:inherit; text-decoration:none;">Resurge Studios</a></h2></div></div>
+  <div class="marca rhytmo" data-nome="Rhytmo" data-categorias="roupas"><div class="marca-info"><h2><a href="rhytmo.html" style="color:inherit; text-decoration:none;">Rhytmo</a></h2></div></div>
+  <div class="marca saintephemere" data-nome="Saintephemere" data-categorias="roupas"><div class="marca-info"><h2><a href="saintephemere.html" style="color:inherit; text-decoration:none;">Saintephemere</a></h2></div></div>
+  <div class="marca sczo-6" data-nome="Sczo-6" data-categorias="roupas"><div class="marca-info"><h2><a href="sczo-6.html" style="color:inherit; text-decoration:none;">Sczo-6</a></h2></div></div>
+  <div class="marca secta" data-nome="Secta" data-categorias="roupas"><div class="marca-info"><h2><a href="secta.html" style="color:inherit; text-decoration:none;">Secta</a></h2></div></div>
+  <div class="marca skopos" data-nome="Skopos" data-categorias="roupas"><div class="marca-info"><h2><a href="skopos.html" style="color:inherit; text-decoration:none;">Skopos</a></h2></div></div>
+  <div class="marca state-of-wonder" data-nome="State of wonder" data-categorias="roupas"><div class="marca-info"><h2><a href="state-of-wonder.html" style="color:inherit; text-decoration:none;">State of wonder</a></h2></div></div>
+  <div class="marca ukio" data-nome="Ukio" data-categorias="roupas"><div class="marca-info"><h2><a href="ukio.html" style="color:inherit; text-decoration:none;">Ukio</a></h2></div></div>
+  <div class="marca ung" data-nome="Ung" data-categorias="roupas"><div class="marca-info"><h2><a href="ung.html" style="color:inherit; text-decoration:none;">Ung</a></h2></div></div>
+  <div class="marca viga" data-nome="Viga" data-categorias="calcados"><div class="marca-info"><h2><a href="viga.html" style="color:inherit; text-decoration:none;">Viga</a></h2></div></div>
+  <div class="marca vilela-boots" data-nome="Vilela boots" data-categorias="calcados"><div class="marca-info"><h2><a href="vilela-boots.html" style="color:inherit; text-decoration:none;">Vilela boots</a></h2></div></div>
+  <div class="marca vinegar" data-nome="Vinegar" data-categorias="roupas"><div class="marca-info"><h2><a href="vinegar.html" style="color:inherit; text-decoration:none;">Vinegar</a></h2></div></div>
+  <div class="marca vista" data-nome="Vista" data-categorias="roupas"><div class="marca-info"><h2><a href="vista.html" style="color:inherit; text-decoration:none;">Vista</a></h2></div></div>
+  <div class="marca working-title" data-nome="Working title" data-categorias="roupas"><div class="marca-info"><h2><a href="working-title.html" style="color:inherit; text-decoration:none;">Working title</a></h2></div></div>
+  <div class="marca yatsa" data-nome="Yatsa" data-categorias="roupas"><div class="marca-info"><h2><a href="yatsa.html" style="color:inherit; text-decoration:none;">Yatsa</a></h2></div></div>
 </section>
 
 <script src="script.js"></script>
