@@ -5,211 +5,219 @@
 <meta content="width=device-width,initial-scale=1" name="viewport"/>
 <title>Catálogo de Marcas Brasileiras</title>
 <style>
-  :root{
-    --card-height: 220px;
-  }
-  body {
-    font-family: Arial, sans-serif;
-    margin: 0;
-    background: #f4f4f6;
-    color: #111;
-  }
+/* === CSS LIMPO E CORRIGIDO ===
+  Removi os espaços problemáticos do início das linhas
+*/
+:root {
+  --card-height: 220px;
+}
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  background: #f4f4f6;
+  color: #111;
+}
 
-  header {
-    background: #0f1113;
-    color: #fff;
-    padding: 1.25rem;
-    text-align: center;
-  }
-  header p { opacity: 0.9; margin: .25rem 0 0; }
+header {
+  background: #0f1113;
+  color: #fff;
+  padding: 1.25rem;
+  text-align: center;
+}
+header p { opacity: 0.9; margin: .25rem 0 0; }
 
-  .busca { margin-top: .9rem; }
-  .busca input{
-    padding: .5rem .75rem;
-    width: 86%;
-    max-width: 420px;
-    border: none;
-    border-radius: 8px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.12) inset;
-  }
+.busca { margin-top: .9rem; }
+.busca input{
+  padding: .5rem .75rem;
+  width: 86%;
+  max-width: 420px;
+  border: none;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.12) inset;
+}
 
-  /* =============== NOVO CSS PARA OS FILTROS =============== */
-  .filtros {
-    margin-top: 1.25rem;
-    display: flex;
-    flex-wrap: wrap;
-    gap: .5rem;
-    justify-content: center;
-  }
-  .btn-filtro {
-    padding: .5rem .9rem;
-    border: 1px solid rgba(255,255,255,0.2);
-    background: rgba(255,255,255,0.08);
-    color: #fff;
-    border-radius: 8px;
-    cursor: pointer;
-    font-size: .9rem;
-    font-weight: 600;
-    transition: background .2s, border-color .2s;
-  }
-  .btn-filtro:hover {
-    background: rgba(255,255,255,0.15);
-  }
-  .btn-filtro.ativo {
-    /* Estilo do botão selecionado */
-    background: #fff;
-    color: #0f1113;
-    border-color: #fff;
-  }
-  /* ======================================================== */
+/* === CSS ADICIONADO PARA OS FILTROS === */
+.filtros {
+  margin-top: 1.25rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: .5rem;
+  justify-content: center;
+}
+.btn-filtro {
+  padding: .5rem .9rem;
+  border: 1px solid rgba(255,255,255,0.2);
+  background: rgba(255,255,255,0.08);
+  color: #fff;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: .9rem;
+  font-weight: 600;
+  transition: background .2s, border-color .2s;
+}
+.btn-filtro:hover {
+  background: rgba(255,255,255,0.15);
+}
+.btn-filtro.ativo {
+  background: #fff;
+  color: #0f1113;
+  border-color: #fff;
+}
+/* ======================================= */
 
-  .catalogo {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-    gap: 1rem;
-    padding: 1rem;
-    max-width: 1200px;
-    margin: 0 auto 3rem;
-  }
+.catalogo {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 1rem;
+  padding: 1rem;
+  max-width: 1200px;
+  margin: 0 auto 3rem;
+}
 
-  .marca {
-    border-radius: 12px;
-    overflow: hidden;
-    position: relative;
-    min-height: var(--card-height);
-    display: flex;
-    align-items: end;
-    background-color: #ddd; /* fallback */
-    background-size: cover;
-    background-position: center;
-    transition: transform .32s cubic-bezier(.2,.9,.3,1), box-shadow .32s;
-    box-shadow: 0 4px 12px rgba(16,24,40,0.06);
-  }
-  .marca:hover{
-    transform: translateY(-6px) scale(1.02);
-    box-shadow: 0 18px 40px rgba(16,24,40,0.16);
-  }
+.marca {
+  border-radius: 12px;
+  overflow: hidden;
+  position: relative;
+  min-height: var(--card-height);
+  display: flex;
+  align-items: end;
+  background-color: #ddd; /* fallback */
+  background-size: cover;
+  background-position: center;
+  transition: transform .32s cubic-bezier(.2,.9,.3,1), box-shadow .32s;
+  box-shadow: 0 4px 12px rgba(16,24,40,0.06);
+}
+.marca:hover{
+  transform: translateY(-6px) scale(1.02);
+  box-shadow: 0 18px 40px rgba(16,24,40,0.16);
+}
 
-  .marca::after{
-    /* subtle vignette to make text pop */
-    content: "";
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(180deg, rgba(0,0,0,0.05) 0%, rgba(0,0,0,0.45) 100%);
-    pointer-events: none;
-    transition: background .3s;
-  }
+.marca::after{
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(0,0,0,0.05) 0%, rgba(0,0,0,0.45) 100%);
+  pointer-events: none;
+  transition: background .3s;
+}
 
-  .marca-info{
-    position: relative;
-    z-index: 2;
-    width: 100%;
-    background: rgba(0,0,0,0.45);
-    padding: 1.25rem;
-    text-align: center;
-    color: #fff;
-    transition: background .28s;
-    backdrop-filter: blur(2px);
-  }
-  .marca:hover .marca-info{ background: rgba(0,0,0,0.6); }
+.marca-info{
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  background: rgba(0,0,0,0.45);
+  padding: 1.25rem;
+  text-align: center;
+  color: #fff;
+  transition: background .28s;
+  backdrop-filter: blur(2px);
+}
+.marca:hover .marca-info{ background: rgba(0,0,0,0.6); }
 
-  .marca-info h2{
-    margin: 0;
-    font-size: 1.05rem;
-    letter-spacing: .2px;
-    text-shadow: 0 6px 18px rgba(0,0,0,0.55);
-  }
-  .marca-info .btn-insta{
-    display: inline-block;
-    margin-top: .7rem;
-    padding: .4rem .7rem;
-    background: linear-gradient(180deg,#e84880,#c8255a);
-    color: #fff;
-    text-decoration: none;
-    border-radius: 8px;
-    font-weight: 700;
-    font-size: .9rem;
-    box-shadow: 0 6px 18px rgba(232,72,128,0.12);
-  }
-  .marca-info .btn-insta:focus { outline: 2px solid rgba(255,255,255,0.12); }
+.marca-info h2{
+  margin: 0;
+  font-size: 1.05rem;
+  letter-spacing: .2px;
+  text-shadow: 0 6px 18px rgba(0,0,0,0.55);
+}
+.marca-info .btn-insta{
+  display: inline-block;
+  margin-top: .7rem;
+  padding: .4rem .7rem;
+  background: linear-gradient(180deg,#e84880,#c8255a);
+  color: #fff;
+  text-decoration: none;
+  border-radius: 8px;
+  font-weight: 700;
+  font-size: .9rem;
+  box-shadow: 0 6px 18px rgba(232,72,128,0.12);
+}
+.marca-info .btn-insta:focus { outline: 2px solid rgba(255,255,255,0.12); }
 
-/* ... (resto do seu CSS permanece o mesmo) ... */
-  .marca._1of1 { background-image: url("1of1.jpg"); }
-  .marca.above-average { background-image: url("above-average.jpg"); }
-  .marca.aevus { background-image: url("aevus.jpg"); }
-  .marca.agui { background-image: url("agui.jpg"); }
-  .marca.amenbreak { background-image: url("amenbreak.jpg"); }
-  .marca.amni { background-image: url("amni.jpg"); }
-  .marca.antifashion { background-image: url("antifashion.jpg"); }
-  .marca.apill { background-image: url("apill.jpg"); }
-  .marca.arch-studio { background-image: url("arch-studio.jpg"); }
-  .marca.ash3s { background-image: url("ash3s.jpg"); }
-  .marca.borra { background-image: url("borra.jpg"); }
-  .marca.carnan { background-image: url("carnan.jpg"); }
-  .marca.cie { background-image: url("cie.jpg"); }
-  .marca.ciena { background-image: url("ciena.jpg"); }
-  .marca.clemente-studio { background-image: url("clemente-studio.jpg"); }
-  .marca.cruelty { background-image: url("cruelty.jpg"); }
-  .marca.cypriano { background-image: url("cypriano.jpg"); }
-  .marca.desgosto { background-image: url("desgosto.jpg"); }
-  .marca.desprezo { background-image: url("desprezo.jpg"); }
-  .marca.dust { background-image: url("dust.jpg"); }
-  .marca.dismorfia { background-image: url("dismorfia.jpg"); }
-  .marca.dod-alfaiataria { background-image: url("dod-alfaiataria.jpg"); }
-  .marca.dope-studios { background-image: url("dope-studios.jpg"); }
-  .marca.each { background-image: url("each.jpg"); }
-  .marca.eclat { background-image: url("eclat.jpg"); }
-  .marca.egho-studios { background-image: url("egho-studios.jpg"); }
-  .marca.eloemcomum { background-image: url("eloemcomum.jpg"); }
-  .marca.estante-project { background-image: url("estante-project.jpg"); }
-  .marca.estudio-teia { background-image: url("estudio-teia.jpg"); }
-  .marca.etogallery { background-image: url("etogallery.jpg"); }
-  .marca.evo-studios { background-image: url("evo-studios.jpg"); }
-  .marca.hard-jeans-santo { background-image: url("hard-jeans-santo.jpg"); }
-  .marca.hatelegit { background-image: url("hatelegit.jpg"); }
-  .marca.heiko { background-image: url("heiko.jpg"); }
-  .marca.humanite { background-image: url("humanite.jpg"); }
-  .marca.izanagi-store { background-image: url("izanagi-store.jpg"); }
-  .marca.kaeda { background-image: url("kaeda.jpg"); }
-  .marca.kapitol-kulture { background-image: url("kapitol-kulture.jpg"); }
-  .marca.kardigan { background-image: url("kardigan.jpg"); }
-  .marca.kg-studios { background-image: url("kg-studios.jpg"); }
-  .marca.kleos { background-image: url("kleos.jpg"); }
-  .marca.l-ordre { background-image: url("l-ordre.jpg"); }
-  .marca.mad-enlatados { background-image: url("mad-enlatados.jpg"); }
-  .marca.melania { background-image: url("melania.jpg"); }
-  .marca.morte-visual { background-image: url("morte-visual.jpg"); }
-  .marca.noir-division { background-image: url("noir-division.jpg"); }
-  .marca.northstar { background-image: url("northstar.jpg"); }
-  .marca.oblivio-studios { background-image: url("oblivio-studios.jpg"); }
-  .marca.onyx { background-image: url("onyx-five.jpg"); }
-  .marca.pace { background-image: url("pace.jpg"); }
-  .marca.palla-world { background-image: url("palla-world.jpg"); }
-  .marca.pelestie { background-image: url("pelestie.jpg"); }
-  .marca.perschange { background-image: url("perschange.jpg"); }
-  .marca.piet { background-image: url("piet.jpg"); }
-  .marca.preux { background-image: url("preux.jpg"); }
-  .marca.resurge-studios { background-image: url("resurge-studios.jpg"); }
-  .marca.rhytmo { background-image: url("rhytmo.jpg"); }
-  .marca.saintephemere { background-image: url("saintephemere.jpg"); }
-  .marca.sczo-6 { background-image: url("sczo-6.jpg"); }
-  .marca.secta { background-image: url("secta.jpg"); }
-  .marca.skopos { background-image: url("skopos.jpg"); }
-  .marca.state-of-wonder { background-image: url("state-of-wonder.jpg"); }
-  .marca.ukio { background-image: url("ukio.jpg"); }
-  .marca.ung { background-image: url("ung.jpg"); }
-  .marca.viga { background-image: url("viga.jpg"); }
-  .marca.vilela-boots { background-image: url("vilela-boots.jpg"); }
-  .marca.vinegar { background-image: url("vinegar.jpg"); }
-  .marca.vista { background-image: url("vista.jpg"); }
-  .marca.working-title { background-image: url("working-title.jpg"); }
-  .marca.yatsa { background-image: url("yatsa.jpg"); }
+/* entrance */
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.marca { animation: fadeInUp .5s ease both; }
 
-  /* small screens tweak */
-  @media (max-width:480px){
-    .marca-info{ padding: 1rem; }
-    :root{ --card-height: 180px; }
-  }
+/* ==== BACKGROUNDS DE CADA MARCA ==== */
+.marca._1of1 { background-image: url("1of1.jpg"); }
+.marca.above-average { background-image: url("above-average.jpg"); }
+.marca.aevus { background-image: url("aevus.jpg"); }
+.marca.agui { background-image: url("agui.jpg"); }
+.marca.amenbreak { background-image: url("amenbreak.jpg"); }
+.marca.amni { background-image: url("amni.jpg"); }
+.marca.antifashion { background-image: url("antifashion.jpg"); }
+.marca.apill { background-image: url("apill.jpg"); }
+.marca.arch-studio { background-image: url("arch-studio.jpg"); }
+.marca.ash3s { background-image: url("ash3s.jpg"); }
+.marca.borra { background-image: url("borra.jpg"); }
+.marca.carnan { background-image: url("carnan.jpg"); }
+.marca.cie { background-image: url("cie.jpg"); }
+.marca.ciena { background-image: url("ciena.jpg"); }
+.marca.clemente-studio { background-image: url("clemente-studio.jpg"); }
+.marca.cruelty { background-image: url("cruelty.jpg"); }
+.marca.cypriano { background-image: url("cypriano.jpg"); }
+.marca.desgosto { background-image: url("desgosto.jpg"); }
+.marca.desprezo { background-image: url("desprezo.jpg"); }
+.marca.dust { background-image: url("dust.jpg"); }
+.marca.dismorfia { background-image: url("dismorfia.jpg"); }
+.marca.dod-alfaiataria { background-image: url("dod-alfaiataria.jpg"); }
+.marca.dope-studios { background-image: url("dope-studios.jpg"); }
+.marca.each { background-image: url("each.jpg"); }
+.marca.eclat { background-image: url("eclat.jpg"); }
+.marca.egho-studios { background-image: url("egho-studios.jpg"); }
+.marca.eloemcomum { background-image: url("eloemcomum.jpg"); }
+.marca.estante-project { background-image: url("estante-project.jpg"); }
+.marca.estudio-teia { background-image: url("estudio-teia.jpg"); }
+.marca.etogallery { background-image: url("etogallery.jpg"); }
+.marca.evo-studios { background-image: url("evo-studios.jpg"); }
+.marca.hard-jeans-santo { background-image: url("hard-jeans-santo.jpg"); }
+.marca.hatelegit { background-image: url("hatelegit.jpg"); }
+.marca.heiko { background-image: url("heiko.jpg"); }
+.marca.humanite { background-image: url("humanite.jpg"); }
+.marca.izanagi-store { background-image: url("izanagi-store.jpg"); }
+.marca.kaeda { background-image: url("kaeda.jpg"); }
+.marca.kapitol-kulture { background-image: url("kapitol-kulture.jpg"); }
+.marca.kardigan { background-image: url("kardigan.jpg"); }
+.marca.kg-studios { background-image: url("kg-studios.jpg"); }
+.marca.kleos { background-image: url("kleos.jpg"); }
+.marca.l-ordre { background-image: url("l-ordre.jpg"); }
+.marca.mad-enlatados { background-image: url("mad-enlatados.jpg"); }
+.marca.melania { background-image: url("melania.jpg"); }
+.marca.morte-visual { background-image: url("morte-visual.jpg"); }
+.marca.noir-division { background-image: url("noir-division.jpg"); }
+.marca.northstar { background-image: url("northstar.jpg"); }
+.marca.oblivio-studios { background-image: url("oblivio-studios.jpg"); }
+.marca.onyx { background-image: url("onyx-five.jpg"); }
+.marca.pace { background-image: url("pace.jpg"); }
+.marca.palla-world { background-image: url("palla-world.jpg"); }
+.marca.pelestie { background-image: url("pelestie.jpg"); }
+.marca.perschange { background-image: url("perschange.jpg"); }
+.marca.piet { background-image: url("piet.jpg"); }
+.marca.preux { background-image: url("preux.jpg"); }
+.marca.resurge-studios { background-image: url("resurge-studios.jpg"); }
+.marca.rhytmo { background-image: url("rhytmo.jpg"); }
+.marca.saintephemere { background-image: url("saintephemere.jpg"); }
+.marca.sczo-6 { background-image: url("sczo-6.jpg"); }
+.marca.secta { background-image: url("secta.jpg"); }
+.marca.skopos { background-image: url("skopos.jpg"); }
+.marca.state-of-wonder { background-image: url("state-of-wonder.jpg"); }
+.marca.ukio { background-image: url("ukio.jpg"); }
+.marca.ung { background-image: url("ung.jpg"); }
+.marca.viga { background-image: url("viga.jpg"); }
+.marca.vilela-boots { background-image: url("vilela-boots.jpg"); }
+.marca.vinegar { background-image: url("vinegar.jpg"); }
+.marca.vista { background-image: url("vista.jpg"); }
+.marca.working-title { background-image: url("working-title.jpg"); }
+.marca.yatsa { background-image: url("yatsa.jpg"); }
+
+/* small screens tweak */
+@media (max-width:480px){
+  .marca-info{ padding: 1rem; }
+  :root{ --card-height: 180px; }
+}
 </style>
 </head>
 <body>
